@@ -5,3 +5,6 @@
 	path = boot/udk
 	url = https://github.com/clearnature/udk.git
 	branch = trirv
+[submodule "boot/rustsbi"]
+	path = boot/rustsbi
+	url = https://github.com/clearnature/rustsbi.git
