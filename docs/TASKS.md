@@ -34,3 +34,12 @@ app/                      验证应用（T2–T4 的 main）
 tools/                    构建脚本（tri-tcc/trirv_cc 链）
 docs/                     ADR 与移植笔记（含既有数学研究方向）
 ```
+
+## T0 裸机冒烟（T1 前置，2026-11-24 插入；部分已被 ADR-001 裁定实验证明）
+
+- [x] **T0.1 异步抢占实证**：8 指令死循环程序——MIE=1+irq_timer 挂起，
+      任意指令退休点 trap（mcause=MTIMER）→ mtvec 分发 → trap 处理执行。
+      （ADR-001「假设与风险」节的裁定实验，PyVM 亲核。）
+- [ ] **T0.2 C 完整版**：tri-tcc 编译等价 C 程序（volatile tick_count +
+      irq_handler + 死循环 + 串口计数输出），双 VM 冒烟。
+      验收：tick 计数递增不受死循环阻塞；exit 口径双 VM 一致。

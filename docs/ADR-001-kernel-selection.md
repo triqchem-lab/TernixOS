@@ -32,6 +32,26 @@ arch 接口清单（los_context/los_interrupt/los_atomic/los_timer）作为
 第二套假设对照——两套都过，才能说 ISA 对 RTOS 生态成立，而非恰好
 迎合单一内核。
 
+## 假设与风险（2026-11-24，外部评审 5 条的逐条裁定 + 实证）
+
+**评审三处事实更正**（TriRV 实际规格）：
+1. tryte = **5 trit**（243 值），非 6——「9 tryte=54 trit 不对齐」的推导
+   基于 6-trit tryte 假设；实际 9 tryte = 45 trit = word，**精确对齐**。
+2. 45-trit word 是 D5 拍板规格（≈2^71.3，long=pointer 同宽），非笔误；
+   21-trit RV-T 提案已被 ADR-38 前身复核否决（装不下 int64）。
+3. TriRV VM **已是抢占式**：`step()` 末尾在 MIE=1 且 irq_timer 挂起时
+   异步注入 trap（任意指令退休点）——已用 8 指令死循环程序实证
+   （死循环 → mtimer 注入 → mcause=MTIMER → mtvec 分发 → trap 处理
+   执行）。"纯 C port"假设成立，方案 B（VM 升级）无需。
+
+| 假设 | 裁定 | 风险与缓解 |
+|---|---|---|
+| VM 协作式 | ❌ **实际是抢占式**（步末异步注入，已实证） | 无——FreeRTOS 抢占语义原生支持 |
+| 无硬件中断屏蔽 | ❌ **有**：mstatus.MIE/MPIE + mie/mip CSR 模拟（trap 自动 MIE→MPIE） | `portDISABLE_INTERRUPTS` = 清 mstatus.MIE（真实 CSR 口径，非软件标志） |
+| 45-trit word 与 C ABI | ✅ 一致：int=pointer=45 trit=9 tryte（tri-tcc PTR_SIZE=9） | `portmacro.h` 加 `_Static_assert` 锁死 |
+| 无 mtimecmp CSR | ✅ 成立：VM 现 CSR 白名单无 mtimer 读写面 | `vPortSetupTimerInterrupt` 依赖 trirv 批次 5（mtimer CSR+注入 API） |
+| 栈 4096 单位 | **tryte** 口径（4096 tryte = 455 word ≈ FreeRTOS 128–256 word 惯例的 1.7×） | configMINIMAL_STACK_SIZE 按 word 计 ≥128；printf 任务加栈 |
+
 ## 分支模型（2026-11-24）
 
 - `main`：平台骨架（port 接口/文档），挂首选内核 vendor（FreeRTOS-Kernel）。
