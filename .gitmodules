@@ -1,3 +1,4 @@
-[submodule "kernel/FreeRTOS-Kernel"]
-	path = kernel/FreeRTOS-Kernel
-	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git
+[submodule "kernel/LiteOS_M"]
+	path = kernel/LiteOS_M
+	url = https://github.com/openharmony/kernel_liteos_m.git
+	branch = master
