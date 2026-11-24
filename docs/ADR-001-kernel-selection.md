@@ -32,6 +32,15 @@ arch 接口清单（los_context/los_interrupt/los_atomic/los_timer）作为
 第二套假设对照——两套都过，才能说 ISA 对 RTOS 生态成立，而非恰好
 迎合单一内核。
 
+## 分支模型（2026-11-24）
+
+- `main`：平台骨架（port 接口/文档），挂首选内核 vendor（FreeRTOS-Kernel）。
+- `freertos`：FreeRTOS 工作线（与 main 同起点）。
+- `liteos-m`：LiteOS-M 工作线（kernel/LiteOS_M 子模块 +
+  port/trirv_liteos 接口映射表——验证矩阵第二列）。
+- 两分支 port 层代码不共享（各按内核接口原生实现）；验证结论回
+  main 的本 ADR 汇总。
+
 ## 移植四模块 → TriRV 实现映射
 
 | 外部分析的模块 | TriRV 实现 | 依赖 |
