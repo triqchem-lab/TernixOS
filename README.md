@@ -3,6 +3,17 @@
 Ternix（TritOS）——跑在 **TriRV 三进制 ISA**（45-trit，9-tryte tryte/45-trit word）
 上的微内核验证平台。
 
+## 架构定位（ADR-002）
+
+TernixOS **不是 VM，是 OS**——从 UEFI 启动接管硬件、与 Linux 平级。
+分层：应用（纯 trit）→ 微内核 → **HAL 接口**（trit 语义硬件抽象）→
+HAL 后端（当下=trirv VM 承载；终态=FPGA/ASIC 三值硬件直驱）→ 物理
+bit 硬件。编码层只存在于介质边界（网络/ISO）与 HAL↔物理硬件两处；
+**TernixOS 内部是纯 trit**。
+
+核心纪律：内核/应用语义从第一天假设 HAL 是硬件加速的——软件模拟
+（VM 解释执行）只是 HAL 的后端实现，禁止泄漏进上层语义。
+
 ## 内核验证（ADR-001）
 
 首选 **FreeRTOS-Kernel（MIT）**，第二内核 LiteOS-M——验证矩阵对照

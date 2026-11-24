@@ -1,4 +1,7 @@
-/* port.c —— TriRV port 层（ADR-001；状态：接口骨架，T1–T4 落地实现）
+/* port.c —— TriRV port 层（ADR-001；ADR-002 架构关系：本 port 适配
+ * 的是 TernixOS **HAL 接口**——HAL 当下后端=trirv VM 承载，终态=
+ * FPGA/ASIC 直驱；port 不感知后端差异，切换零改动。）
+ * 状态：接口骨架，T1–T4 落地实现）。
  *
  * TriRV VM 的协作式顺序执行消除了 FreeRTOS port 的三大硬件耦合：
  *   1. 上下文切换 = 普通 C 栈帧保存/恢复（SW/LW 序列，ISA 原生）；

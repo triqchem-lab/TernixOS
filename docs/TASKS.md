@@ -43,3 +43,14 @@ docs/                     ADR 与移植笔记（含既有数学研究方向）
 - [ ] **T0.2 C 完整版**：tri-tcc 编译等价 C 程序（volatile tick_count +
       irq_handler + 死循环 + 串口计数输出），双 VM 冒烟。
       验收：tick 计数递增不受死循环阻塞；exit 口径双 VM 一致。
+
+## T-arch（批次前置，ADR-002 架构纪律落地）
+
+- [ ] **T-arch.1 HAL 接口定义**：`hal/trirv_hal.h`——trit 内存
+      （读/写 word/tryte）、trit 字符流（stdin/stdout）、tick（注册/
+      频率）、中断面（注册/屏蔽）、块设备（预留）。接口纯 trit 语义，
+      禁止 byte/VM 术语泄漏（ADR-002 §4 纪律）。
+- [ ] **T-arch.2 VM 后端**：`hal/backend_vm.c`——以 trirv VM 为后端
+      实现上述接口（当下 port/trirv 直接调 VM 的部分改经 HAL）。
+- [ ] **T-arch.3 port 重接线**：port/trirv 经 HAL 接口；FreeRTOS 编译
+      过链不改（T1 验收标准不变）。
